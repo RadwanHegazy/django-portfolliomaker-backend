@@ -1,0 +1,4 @@
+migrations
+__pycache__
+media/user-pics/*
+*.sqlite3
