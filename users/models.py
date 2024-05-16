@@ -3,7 +3,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
-
+from tenant.models import SiteTenant
 
 class user_objects (BaseUserManager) :
     def create_user (self,email,password,**fields) : 
@@ -36,15 +36,9 @@ class User (AbstractUser) :
     def __str__(self) -> str:
         return self.full_name
     
-class Site (models.Model) : 
-    name = models.SlugField(max_length=50,unique=True)
-    user = models.ForeignKey(User,related_name='user_site',on_delete=models.CASCADE)
-    about = models.TextField()
-    is_working = models.BooleanField(default=True)
-    jop_title = models.CharField(max_length=225)
 
 @receiver(post_save,sender=User)
 def create_site_for_user(created, instance:User,**kwargs) : 
     if created:
-        site = Site(user=instance,name=slugify(instance.full_name))
+        site = SiteTenant(user=instance,name=slugify(instance.full_name))
         site.save()
