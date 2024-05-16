@@ -29,13 +29,27 @@ class User (AbstractUser) :
     full_name = models.CharField(max_length=225)
     email = models.EmailField(unique=True)
     picture = models.ImageField(upload_to='user-pics/',default='user.png')
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('full_name',)
 
     def __str__(self) -> str:
         return self.full_name
     
+    def serializer (self, host) -> dict :
+        tenant = SiteTenant.objects.get(user=self)
+        return {
+            'full_name' : self.full_name,
+            'email' : self.email,
+            'picture' : self.picture,
+            'tenant' : {
+                'domain' : f'http://{tenant.name}.{host}',
+                'is_working' : tenant.is_working,
+                'about': tenant.about,
+                'jop_title' : tenant.jop_title
+            }
+
+        }
 
 @receiver(post_save,sender=User)
 def create_site_for_user(created, instance:User,**kwargs) : 
