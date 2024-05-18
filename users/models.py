@@ -41,9 +41,9 @@ class User (AbstractUser) :
         return {
             'full_name' : self.full_name,
             'email' : self.email,
-            'picture' : self.picture,
+            'picture' : self.picture.url,
             'tenant' : {
-                'domain' : f'http://{tenant.name}.{host}',
+                'name' : tenant.name,
                 'is_working' : tenant.is_working,
                 'about': tenant.about,
                 'jop_title' : tenant.jop_title

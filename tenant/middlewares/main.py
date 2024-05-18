@@ -13,7 +13,7 @@ class TenantMiddleware:
         if len(str(hostname).split('.')) > 1 :
             tenant_name =  str(hostname).split('.')[0]
             try : 
-                site = SiteTenant.objects.get(name=tenant_name,is_working=True)
+                site = SiteTenant.objects.get(name=tenant_name)
                 request.has_tenant = True
                 request.tenant = site
             except SiteTenant.DoesNotExist:

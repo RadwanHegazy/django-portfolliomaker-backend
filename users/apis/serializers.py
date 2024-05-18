@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import serializers
-from ..models import User
+from ..models import User, SiteTenant
 from rest_framework.validators import ValidationError
 
 class GetTokens :
@@ -43,12 +43,18 @@ class RegisterSerilaizer (serializers.ModelSerializer, GetTokens) :
 
     def validate(self, attrs):
         email = attrs['email']
-
+        full_name = attrs['full_name']
+        
         if User.objects.filter(email=email).exists() : 
             raise ValidationError({
                 'message' : 'user with email already exists'
             },code=400)
-    
+        
+        if SiteTenant.objects.filter(name=full_name).exists() : 
+            raise ValidationError({
+                'message' : 'this full name can not be accepted'
+            },code=400)
+        
         return attrs
     
     def save(self, **kwargs):
