@@ -8,13 +8,7 @@ class update_view(APIView) :
     permission_classes = [permissions.IsAuthenticated]
 
     def put(self, request, **kwargs) : 
-        if not request.has_tenant :
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        tenant:SiteTenant = request.tenant
-        
-        if tenant.user != request.user : 
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        tenant:SiteTenant = SiteTenant.objects.get(user=request.user)
         
         serializer = self.serializer_class(tenant,data=request.data)
         if serializer.is_valid() : 
